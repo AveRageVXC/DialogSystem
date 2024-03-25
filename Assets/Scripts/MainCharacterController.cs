@@ -1,22 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class CharacterController : MonoBehaviour
+public class MainCharacterController : MonoBehaviour
 {
-    private Rigidbody2D rigidbody2D;
+    private Rigidbody2D _rigidbody2D;
     [SerializeField] private float speed = 4f;
+    public float interactionRadius = 3.0f;
     Vector2 motionVector;
     public Vector2 lastMotionVector;
     Animator animator;
+    Animator animato2r;
     public bool moving;
     void Awake()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
@@ -41,6 +44,11 @@ public class CharacterController : MonoBehaviour
              animator.SetFloat("lastHorizontal", horizontal);
                 animator.SetFloat("lastVertical", vertical);
          }
+         if (Input.GetKeyDown(KeyCode.E))
+         {
+             Console.WriteLine("Interacting with closest person");
+             InteractWithClosestPerson();
+         }
     }
 
     void FixedUpdate()
@@ -50,6 +58,20 @@ public class CharacterController : MonoBehaviour
 
     private void Move()
     {
-        rigidbody2D.velocity = motionVector.normalized * speed;
+        _rigidbody2D.velocity = motionVector.normalized * speed;
+    }
+    
+    private void InteractWithClosestPerson()
+    {
+        var closestPerson = Physics2D.OverlapCircleAll(transform.position, interactionRadius)
+            .Select(collider => collider.GetComponent<InteractablePerson>())
+            .Where(person => person != null)
+            .OrderBy(person => Vector2.Distance(transform.position, person.transform.position))
+            .FirstOrDefault();
+
+        if (closestPerson != null)
+        {
+            closestPerson.StartDialogue();
+        }
     }
 }
