@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -12,6 +13,7 @@ public class MainCharacterController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     [SerializeField] private float speed = 4f;
     public float interactionRadius = 3.0f;
+    [FormerlySerializedAs("lastInteractablePerson")] public InteractableNPC lastInteractableNpc;
     Vector2 motionVector;
     public Vector2 lastMotionVector;
     Animator animator;
@@ -24,7 +26,8 @@ public class MainCharacterController : MonoBehaviour
     }
 
     private void Update()
-    {
+    { 
+        
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         motionVector = new Vector2(
@@ -44,12 +47,34 @@ public class MainCharacterController : MonoBehaviour
              animator.SetFloat("lastHorizontal", horizontal);
                 animator.SetFloat("lastVertical", vertical);
          }
-         if (Input.GetKeyDown(KeyCode.E))
-         {
-             Console.WriteLine("Interacting with closest person");
-             InteractWithClosestPerson();
-         }
+         CheckForClosestPerson();
+         
     }
+
+    private void CheckForClosestPerson()
+    {
+        var closestPerson = Physics2D.OverlapCircleAll(transform.position, interactionRadius)
+            .Select(collider => collider.GetComponent<InteractableNPC>())
+            .Where(person => person != null)
+            .OrderBy(person => Vector2.Distance(transform.position, person.transform.position))
+            .FirstOrDefault();
+        
+        if (lastInteractableNpc != null && lastInteractableNpc != closestPerson)
+        {
+            lastInteractableNpc.HideInteractionHind();
+        }
+        lastInteractableNpc = closestPerson;
+        if (closestPerson != null)
+        {
+            closestPerson.ShowInteractionHind();
+            // print("Closest person is " + closestPerson.name);
+        }
+        if (Input.GetKeyDown("e") && closestPerson != null)
+        {
+            InteractWithClosestPerson(closestPerson);
+        }
+    }
+
 
     void FixedUpdate()
     {
@@ -61,17 +86,12 @@ public class MainCharacterController : MonoBehaviour
         _rigidbody2D.velocity = motionVector.normalized * speed;
     }
     
-    private void InteractWithClosestPerson()
+    private void InteractWithClosestPerson(InteractableNPC npc)
     {
-        var closestPerson = Physics2D.OverlapCircleAll(transform.position, interactionRadius)
-            .Select(collider => collider.GetComponent<InteractablePerson>())
-            .Where(person => person != null)
-            .OrderBy(person => Vector2.Distance(transform.position, person.transform.position))
-            .FirstOrDefault();
-
-        if (closestPerson != null)
+        lastInteractableNpc = npc;
+        if (npc != null)
         {
-            closestPerson.StartDialogue();
+            npc.StartDialogue();
         }
     }
 }
