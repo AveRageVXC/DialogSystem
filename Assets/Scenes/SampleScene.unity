@@ -1343,7 +1343,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e0ab23af7f54e1cb247740b7141572c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogues: []
+  dialogues:
+  - {fileID: 11400000, guid: 7d23f0186bc20424180e6e893ac0bd37, type: 2}
+  - {fileID: 11400000, guid: f741140d105378d479a65681e0da8e78, type: 2}
   hindText: {fileID: 0}
 --- !u!61 &865543913
 BoxCollider2D:

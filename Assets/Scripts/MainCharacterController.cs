@@ -88,7 +88,6 @@ public class MainCharacterController : MonoBehaviour
     
     private void InteractWithClosestPerson(InteractableNPC npc)
     {
-        lastInteractableNpc = npc;
         if (npc != null)
         {
             npc.StartDialogue();

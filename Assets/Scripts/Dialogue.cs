@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,20 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Dialogue", menuName = "Dialogue")]
 public class Dialogue : ScriptableObject
 {
-    [SerializeField] DialoguePhrase[] dialoguePhrases;
+    [SerializeField] List<DialoguePhrase> dialoguePhrases;
     public int currentPhrase = 0;
-    
-    
+
+
+    public IEnumerator StartDialogue()
+    {
+        if (currentPhrase < dialoguePhrases.Count)
+        {
+            dialoguePhrases[currentPhrase].Speak();
+            currentPhrase++;
+            
+        }
+        return null;
+    }
 }
 /*public void NextPhrase()
 {

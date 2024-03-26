@@ -2,33 +2,37 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class InteractableNPC: MonoBehaviour
+public class InteractableNPC: MonoBehaviour, ISpeakingPerson
 {
-    [SerializeField] public Dialogue[] dialogues;
-    [SerializeField] public TMP_Text hindText;
-    
+    [SerializeField] public List<Dialogue> dialogues;
+    [SerializeField] public int currentDialogue = 0;
+    [SerializeField] public TMP_Text Text { get; set; }
+    public bool IsSpeaking { get; set; }
+
+
     public void Awake()
     {
-        hindText = GetComponentInChildren<TMP_Text>();
+        Text = GetComponentInChildren<TMP_Text>();
     }
 
     public void StartDialogue()
     {
-        Console.WriteLine("Starting dialogue with person");
+        StartCoroutine(dialogues[currentDialogue].StartDialogue());
     }
 
     public void ShowInteractionHind()
     {
-        hindText.enabled = true;
-        hindText.text = "Press E to interact";
+        if (!IsSpeaking)
+        {
+            Text.enabled = true;
+            (this as ISpeakingPerson).ImmediateSpeak("Press E to interact");
+        }
     }
     
     public void HideInteractionHind()
     {
-        hindText.text = "";
-        hindText.enabled = false;
+        Text.enabled = false;
     }
-    
-    
 }
