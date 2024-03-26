@@ -25,7 +25,6 @@ public class Dialogue : ScriptableObject
         }
         foreach (var speakingPerson in speakingPersons)
         {
-            //Debug.Log(speakingPerson.Text.text);
             speakingPerson.IsInDialogue = true;
         }
         while (currentPhrase < dialoguePhrases.Count)
@@ -41,13 +40,3 @@ public class Dialogue : ScriptableObject
         }
     }
 }
-/*public void NextPhrase()
-{
-    if (currentPhrase < dialogue.Count)
-    {
-
-        dialogue[currentPhrase].Item2.Speak(dialogue[currentPhrase].Item1);
-        currentPhrase++;
-    }
-}
-}*/

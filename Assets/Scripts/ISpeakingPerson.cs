@@ -26,7 +26,7 @@ public interface ISpeakingPerson
         Text.text = "";
     }
     
-    public virtual void ImmediateSpeak(string message)
+    public void ImmediateSpeak(string message)
     {
         Text.text = message;
     }
