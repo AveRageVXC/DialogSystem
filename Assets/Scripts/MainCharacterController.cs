@@ -71,14 +71,13 @@ public class MainCharacterController : MonoBehaviour, ISpeakingPerson
             lastInteractableNpc.HideInteractionHind();
         }
         lastInteractableNpc = closestPerson;
-        if (closestPerson != null)
+        if (closestPerson != null && closestPerson.currentDialogue < closestPerson.dialogues.Count)
         {
             closestPerson.ShowInteractionHind();
-            // print("Closest person is " + closestPerson.name);
-        }
-        if (Input.GetKeyDown("e") && closestPerson != null)
-        {
-            InteractWithClosestPerson(closestPerson);
+            if (Input.GetKeyDown("e"))
+            {
+                InteractWithClosestPerson(closestPerson);
+            }
         }
     }
 
