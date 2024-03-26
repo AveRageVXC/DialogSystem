@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class InteractableNPC: MonoBehaviour, ISpeakingPerson
     [SerializeField] public List<Dialogue> dialogues;
     [SerializeField] public int currentDialogue = 0;
     [SerializeField] public TMP_Text Text { get; set; }
-    public bool IsSpeaking { get; set; }
+    public bool IsInDialogue { get; set; }
 
 
     public void Awake()
@@ -17,22 +18,28 @@ public class InteractableNPC: MonoBehaviour, ISpeakingPerson
         Text = GetComponentInChildren<TMP_Text>();
     }
 
-    public void StartDialogue()
+    public IEnumerator StartDialogue()
     {
-        StartCoroutine(dialogues[currentDialogue].StartDialogue());
+        
+        yield return StartCoroutine(dialogues[currentDialogue].StartDialogue(this));
+        currentDialogue++;
     }
 
     public void ShowInteractionHind()
     {
-        if (!IsSpeaking)
+        if (IsInDialogue is false)
         {
             Text.enabled = true;
             (this as ISpeakingPerson).ImmediateSpeak("Press E to interact");
         }
+        
     }
     
     public void HideInteractionHind()
     {
-        Text.enabled = false;
+        if (IsInDialogue is false)
+        {
+            Text.text = "";
+        }
     }
 }

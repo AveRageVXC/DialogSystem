@@ -5,10 +5,10 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class CharactersManager: MonoBehaviour, ISpeakingPerson
+public class CharactersManager: MonoBehaviour
 {
-    public TMP_Text Text { get; set; }
-    public bool IsSpeaking { get; set; }
+    
+    public static List<ISpeakingPerson> SpeakingCharacters = new List<ISpeakingPerson>();
 
     public static List<Transform> GetFirstOrderChildren(Transform parent)
     {
@@ -27,15 +27,10 @@ public class CharactersManager: MonoBehaviour, ISpeakingPerson
     public void Awake()
     {
         Characters = GetFirstOrderChildren(this.transform);
-        Text = GetComponentInChildren<TMP_Text>();
-    }
-
-    public void Start()
-    {
         foreach (var character in Characters)
         {
             CharactersDictionary.Add(character.name, character);
-            print(character.name);
+            //print(character.name);
         }
     }
     

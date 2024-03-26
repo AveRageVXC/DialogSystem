@@ -1,24 +1,29 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public interface ISpeakingPerson
 {
     
     public TMP_Text Text { get; set; }
-    public bool IsSpeaking { get; set; }
+    public bool IsInDialogue { get; set; }
     
-    public virtual void Speak(string message)
+    public IEnumerator Speak(string message)
     {
-        IsSpeaking = true;
         Text.text = "";
+        Debug.Log(message);
         foreach (char c in message)
         {
             Text.text += c;
-            System.Threading.Thread.Sleep(10);
+            yield return new WaitForSeconds(0.1f);
         }
-        IsSpeaking = false;
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Return));
+        Text.text = "";
     }
     
     public virtual void ImmediateSpeak(string message)

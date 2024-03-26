@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 [System.Serializable]
@@ -8,18 +9,36 @@ using UnityEngine;
 public class Dialogue : ScriptableObject
 {
     [SerializeField] List<DialoguePhrase> dialoguePhrases;
+    
     public int currentPhrase = 0;
+    IEnumerator dialogueCoroutine;
 
-
-    public IEnumerator StartDialogue()
-    {
-        if (currentPhrase < dialoguePhrases.Count)
+    public IEnumerator StartDialogue(MonoBehaviour runner)
+    { 
+        currentPhrase = 0;
+        var speakingPersons = new HashSet<ISpeakingPerson>();
+        foreach (var dialoguePhrase in dialoguePhrases)
         {
-            dialoguePhrases[currentPhrase].Speak();
-            currentPhrase++;
-            
+            var _personTransform = CharactersManager.GetCharacter(dialoguePhrase.person);
+            var speakingPerson = _personTransform.GetComponent<ISpeakingPerson>();
+            speakingPersons.Add(speakingPerson);
         }
-        return null;
+        foreach (var speakingPerson in speakingPersons)
+        {
+            //Debug.Log(speakingPerson.Text.text);
+            speakingPerson.IsInDialogue = true;
+        }
+        while (currentPhrase < dialoguePhrases.Count)
+        {
+            var _personTransform = CharactersManager.GetCharacter(dialoguePhrases[currentPhrase].person);
+            yield return runner.StartCoroutine(_personTransform.GetComponent<ISpeakingPerson>().Speak(dialoguePhrases[currentPhrase].phrase));
+            currentPhrase++;
+            yield return null;
+        }
+        foreach (var speakingPerson in speakingPersons)
+        {
+            speakingPerson.IsInDialogue = false;
+        }
     }
 }
 /*public void NextPhrase()

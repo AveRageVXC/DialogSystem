@@ -1,14 +1,16 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
 public class DialoguePhrase
 {
-    public string person;
-    public string phrase;
+    [SerializeField] public string person;
+    [SerializeField] public string phrase;
     private Transform _personTransform;
-    public void Speak()
+
+    public void Speak(MonoBehaviour runner)
     {
         _personTransform = CharactersManager.GetCharacter(person);
-        _personTransform.GetComponent<ISpeakingPerson>().Speak(phrase);
+        runner.StartCoroutine(_personTransform.GetComponent<ISpeakingPerson>().Speak(phrase));
     }
 }

@@ -611,9 +611,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogues:
-  - {fileID: 11400000, guid: 5155b1e090e85a645848fcf8c3b885d0, type: 2}
-  - {fileID: 0}
-  hindText: {fileID: 0}
+  - {fileID: 11400000, guid: 7d23f0186bc20424180e6e893ac0bd37, type: 2}
+  currentDialogue: 0
 --- !u!1 &264617952
 GameObject:
   m_ObjectHideFlags: 0
@@ -1344,9 +1343,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogues:
-  - {fileID: 11400000, guid: 7d23f0186bc20424180e6e893ac0bd37, type: 2}
+  - {fileID: 11400000, guid: 5155b1e090e85a645848fcf8c3b885d0, type: 2}
   - {fileID: 11400000, guid: f741140d105378d479a65681e0da8e78, type: 2}
-  hindText: {fileID: 0}
+  currentDialogue: 0
 --- !u!61 &865543913
 BoxCollider2D:
   m_ObjectHideFlags: 0

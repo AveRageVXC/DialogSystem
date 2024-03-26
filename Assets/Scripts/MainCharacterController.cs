@@ -2,14 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class MainCharacterController : MonoBehaviour
+public class MainCharacterController : MonoBehaviour, ISpeakingPerson
 {
+    public TMP_Text Text { get; set; }
+    public bool IsInDialogue { get; set; }
     private Rigidbody2D _rigidbody2D;
     [SerializeField] private float speed = 4f;
     public float interactionRadius = 3.0f;
@@ -23,6 +26,7 @@ public class MainCharacterController : MonoBehaviour
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        Text = GetComponentInChildren<TMP_Text>();
     }
 
     private void Update()
@@ -47,8 +51,11 @@ public class MainCharacterController : MonoBehaviour
              animator.SetFloat("lastHorizontal", horizontal);
                 animator.SetFloat("lastVertical", vertical);
          }
-         CheckForClosestPerson();
          
+         if (IsInDialogue is false)
+         {
+             CheckForClosestPerson();             
+         }
     }
 
     private void CheckForClosestPerson()
@@ -90,7 +97,7 @@ public class MainCharacterController : MonoBehaviour
     {
         if (npc != null)
         {
-            npc.StartDialogue();
+            StartCoroutine(npc.StartDialogue());
         }
     }
 }
